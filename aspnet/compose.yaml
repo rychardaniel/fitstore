@@ -1,0 +1,7 @@
+﻿services:
+  fitstore.api:
+    image: fitstore.api
+    build:
+      context: .
+      dockerfile: Fitstore.API/Dockerfile
+
