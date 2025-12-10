@@ -1,6 +1,0 @@
-@Fitstore.API_HostAddress = http://localhost:5136
-
-GET {{Fitstore.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

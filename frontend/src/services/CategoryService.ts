@@ -1,9 +1,12 @@
+import { api } from "./api";
+import type { Category } from "../types";
+
 export const CategoryService = {
-  list: async () => {
-    const response = await fetch('http://localhost:8080/categorias');
-    if (!response.ok) {
-      throw new Error('Failed to fetch categories');
-    }
-    return response.json();
-  }
+    list: async (): Promise<Category[]> => {
+        return api.get<Category[]>("/categories");
+    },
+
+    getById: async (id: number): Promise<Category> => {
+        return api.get<Category>(`/categories/${id}`);
+    },
 };
