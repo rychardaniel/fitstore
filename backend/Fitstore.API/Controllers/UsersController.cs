@@ -35,9 +35,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(User user)
+    public async Task<IActionResult> Create(RegisterUserDto dto)
     {
-        var newUser = await _service.CreateAsync(user);
+        var newUser = await _service.CreateAsync(dto);
         return CreatedAtAction(nameof(GetDetails), new { id = newUser.Id }, newUser);
     }
 
@@ -66,7 +66,7 @@ public class UsersController : ControllerBase
         Response.Cookies.Append("jwt", token, new CookieOptions
         {
             HttpOnly = true,
-            // Secure = true,
+            SameSite = SameSiteMode.Lax,
             MaxAge = TimeSpan.FromHours(1),
             Path = "/"
         });

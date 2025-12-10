@@ -3,6 +3,7 @@ using System;
 using Fitstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Fitstore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251210200825_AddCartAndCartItem")]
+    partial class AddCartAndCartItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,49 +248,6 @@ namespace Fitstore.API.Migrations
                     b.ToTable("products");
                 });
 
-            modelBuilder.Entity("Fitstore.API.Models.Review", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("product_id");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId", "ProductId")
-                        .IsUnique();
-
-                    b.ToTable("reviews");
-                });
-
             modelBuilder.Entity("Fitstore.API.Models.User", b =>
                 {
                     b.Property<long>("Id")
@@ -336,59 +296,6 @@ namespace Fitstore.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
-                });
-
-            modelBuilder.Entity("Fitstore.API.Models.Wishlist", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("wishlists");
-                });
-
-            modelBuilder.Entity("Fitstore.API.Models.WishlistItem", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("AddedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("added_at");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("product_id");
-
-                    b.Property<long>("WishlistId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("wishlist_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("WishlistId");
-
-                    b.ToTable("wishlist_items");
                 });
 
             modelBuilder.Entity("Fitstore.API.Models.Cart", b =>
@@ -460,55 +367,6 @@ namespace Fitstore.API.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Fitstore.API.Models.Review", b =>
-                {
-                    b.HasOne("Fitstore.API.Models.Product", "Product")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Fitstore.API.Models.User", "User")
-                        .WithMany("Reviews")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Fitstore.API.Models.Wishlist", b =>
-                {
-                    b.HasOne("Fitstore.API.Models.User", "User")
-                        .WithOne("Wishlist")
-                        .HasForeignKey("Fitstore.API.Models.Wishlist", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Fitstore.API.Models.WishlistItem", b =>
-                {
-                    b.HasOne("Fitstore.API.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Fitstore.API.Models.Wishlist", "Wishlist")
-                        .WithMany("Items")
-                        .HasForeignKey("WishlistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Wishlist");
-                });
-
             modelBuilder.Entity("Fitstore.API.Models.Cart", b =>
                 {
                     b.Navigation("Items");
@@ -519,25 +377,11 @@ namespace Fitstore.API.Migrations
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("Fitstore.API.Models.Product", b =>
-                {
-                    b.Navigation("Reviews");
-                });
-
             modelBuilder.Entity("Fitstore.API.Models.User", b =>
                 {
                     b.Navigation("Cart");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("Reviews");
-
-                    b.Navigation("Wishlist");
-                });
-
-            modelBuilder.Entity("Fitstore.API.Models.Wishlist", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

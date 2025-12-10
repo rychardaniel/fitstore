@@ -20,11 +20,23 @@ public class UserService
         _configuration = configuration;
     }
 
-    public async Task<User> CreateAsync(User user)
+    public async Task<User> CreateAsync(RegisterUserDto dto)
     {
-        user.Password = Argon2.Hash(user.Password);
-        user.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-        user.Active = true;
+        var user = new User
+        {
+            FullName = dto.FullName,
+            Address = dto.Address,
+            City = dto.City,
+            State = dto.State,
+            ZipCode = dto.ZipCode,
+            Email = dto.Email,
+            Password = Argon2.Hash(dto.Password),
+            Phone = dto.Phone,
+            CreatedAt = DateOnly.FromDateTime(DateTime.Now),
+            Active = true,
+            Role = "Client"
+        };
+
         await _repository.AddAsync(user);
         await _repository.SaveChangesAsync();
         return user;
@@ -57,7 +69,8 @@ public class UserService
             FullName = user.FullName,
             Email = user.Email,
             Active = user.Active,
-            CreatedAt = user.CreatedAt
+            CreatedAt = user.CreatedAt,
+            Role = user.Role
         };
     }
 
@@ -89,8 +102,9 @@ public class UserService
         {
             Subject = new ClaimsIdentity(new[]
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email ?? ""),
-                new Claim(ClaimTypes.Role, "Client") // Default role
+                new Claim(ClaimTypes.Role, user.Role)
             }),
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

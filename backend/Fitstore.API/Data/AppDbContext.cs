@@ -15,6 +15,11 @@ public class AppDbContext : DbContext
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Brand> Brands { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
+    public DbSet<Review> Reviews { get; set; }
+    public DbSet<Wishlist> Wishlists { get; set; }
+    public DbSet<WishlistItem> WishlistItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,5 +29,16 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Order>()
             .Property(p => p.Status)
             .HasConversion<string>();
+
+        // Configure unique constraint for wishlist user
+        modelBuilder.Entity<Wishlist>()
+            .HasIndex(w => w.UserId)
+            .IsUnique();
+
+        // Configure unique constraint for review per user per product
+        modelBuilder.Entity<Review>()
+            .HasIndex(r => new { r.UserId, r.ProductId })
+            .IsUnique();
     }
 }
+
